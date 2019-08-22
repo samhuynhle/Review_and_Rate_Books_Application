@@ -19,7 +19,7 @@
 
       <nav class="navbar navbar-dark" style="height: 5%; min-height: 75px;background-color:#b2bace">
         <div class="col">
-            <h3> Welcome, {{ current_user.first_name }}</h3>
+            <h3 style="color:#001c5d"> Welcome, {{ current_user.first_name }}</h3>
         </div>
         <div class="col-5"></div>
         <div class="col"></div>
@@ -36,7 +36,7 @@
         <!--Column 1-->
         <div class="col-1"></div>
         <div class="col-6 pt-5">
-            <h3>Recent Book Reviews:</h3>
+            <h3 style="color:#001c5d">Recent Book Reviews:</h3>
             <div>
                 {% for review in recent_reviews %}
                     <h5 class="mt-5"><a href="/books/{{review.book.id}}">{{review.book.title}}</a></h5>
@@ -84,10 +84,11 @@
 
         <!--Column 2-->
         <div class="col-5 mt-5">
-            <h3>Other Books with Reviews</h3>   
-            <div class="overflow-auto">
+            <h3 style="color:#001c5d">Other Books with Reviews</h3>   
+            <div class="overflow-auto mt-5" sytle="height: 200px; width: 500px;">
                 {% for book in all_books %}
                 <h5><a href="/books/{{book.id}}"> {{book.title}}</a></h5>
+                <p>by {{ book.author.name }}</p>
                 {% endfor %}
             </div>
         </div>

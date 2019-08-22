@@ -65,52 +65,28 @@ def display_book(request, book_id):
         request.session['user_id'] = 'logged out'
         return redirect('/')
 
-    recent_reviews = []
-    recent_reviews_ratings = []
-    all_reviews = Review.objects.all().order_by('-created_at')
+    # recent_reviews = []
+    # recent_reviews_ratings = []
+    all_reviews = Review.objects.filter(book=Book.objects.get(id=book_id)).order_by('-created_at')
     request.session['current_book'] = book_id
-    
-    if len(all_reviews) > 0:
-        review_one = all_reviews[0]
-        review_one_stars = []
-        for i in range(review_one.rating):
-            review_one_stars.append('gold')
-        for i in range(5-review_one.rating):
-            review_one_stars.append('silver')
-        review_one_stars.append(all_reviews[0])
-        recent_reviews.append(all_reviews[0])
 
-
-    if len(all_reviews) > 1:
-        review_two = all_reviews[1]
-        review_two_stars = []
-        for i in range(review_two.rating):
-            review_two_stars.append('gold')
-        for i in range(5-review_two.rating):
-            review_two_stars.append('silver')
-        review_two_stars.append(all_reviews[1])
-        recent_reviews.append(all_reviews[1])
-
-
-    if len(all_reviews) > 2:
-        review_three = all_reviews[2]
-        review_three_stars = []
-        for i in range(review_three.rating):
-            review_three_stars.append('gold')
-        for i in range(5-review_three.rating):
-            review_three_stars.append('silver')
-        review_three_stars.append(all_reviews[2])
-        recent_reviews.append(all_reviews[2])
-
+    for review in all_reviews:
+        if review.rating == 5:
+            review.rating = ['gold', 'gold', 'gold', 'gold', 'gold']
+        elif review.rating == 4:
+            review.rating = ['gold', 'gold', 'gold', 'gold', 'grey']
+        elif review.rating == 3:
+            review.rating = ['gold', 'gold', 'gold', 'grey', 'grey']
+        elif review.rating == 2:
+            review.rating = ['gold', 'gold', 'grey', 'grey', 'grey']
+        elif review.rating == 1:
+            review.rating = ['gold', 'grey', 'grey', 'grey', 'grey']
 
 
     context = {
         'current_book': Book.objects.get(id=book_id),
         'current_user': User.objects.get(id=request.session['user_id']),
-        'recent_reviews': recent_reviews,
-        'review_one_stars': review_one_stars,
-        'review_two_stars': review_two_stars,
-        'review_three_stars': review_three_stars,
+        'all_reviews': all_reviews,
     }
 
     return render(request, 'books_reviews_app/display_book.html', context)
@@ -120,7 +96,7 @@ def display_user(request, user_id):
         request.session['user_id'] = 'logged out'
         return redirect('/')
 
-    current_user = User.objects.get(id=request.session['user_id'])
+    current_user = User.objects.get(id=user_id)
 
     reviewed_books_list = []
 

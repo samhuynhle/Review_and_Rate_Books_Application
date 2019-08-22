@@ -29,52 +29,28 @@
         </div>
       </nav>
 
-      <div class="row">
+      <div class="row" style="min-height:90%">
         <!--Column 1-->
         <div class="col-1"></div>
         <div class="col-6 pt-5">
             <h3>{{ current_book.title }}</h3>
             <p>Author: {{ current_book.author.name }} </p>
             <div>
-                <h3> Reviews: </h3>
-                {% for review in recent_reviews %}
+                <h4 class="text-muted"> Reviews: </h4>
+                {% for review in all_reviews %}
                   {% if review.book.id == current_book.id %}
-                    <h5><a href="/books/{{review.book.id}}">{{review.book.title}}</a></h5>
+                    <h6><a href="/books/{{review.book.id}}">{{review.book.title}}</a></h6>
                     <div class="mt-2 mb-2">
                         <p>Rating:</p>
-                        <div>
-                            {% load static %}
-                            {% if review in review_one_stars %}
-                              {% for i in review_one_stars %}
-                                  {% if i == "gold" %}
-                                  <img src="{% static 'books_reviews_app/goldstar.png' %}" alt="My image" style="display:inline; max-height: 50px;">
-                                  {% endif %}
-                                  {% if i == "silver" %}
-                                  <img src="{% static 'books_reviews_app/greystar.png' %}" alt="My image" style="display:inline; max-height: 50px;">
-                                  {% endif %}
-                              {% endfor %}
-                            {% endif %}
-                            {% if review in review_two_stars %}
-                            {% for i in review_two_stars %}
-                                {% if i == "gold" %}
-                                <img src="{% static 'books_reviews_app/goldstar.png' %}" alt="My image" style="display:inline; max-height: 50px;">
-                                {% endif %}
-                                {% if i == "silver" %}
-                                <img src="{% static 'books_reviews_app/greystar.png' %}" alt="My image" style="display:inline; max-height: 50px;">
-                                {% endif %}
-                            {% endfor %}
+                        {% load static %}
+                        {% for star in review.rating %}
+                          {% if star == "gold" %}
+                          <img src="{% static 'books_reviews_app/goldstar.png' %}" alt="My image" style="display:inline; max-height: 50px;">
                           {% endif %}
-                          {% if review in review_three_stars %}
-                          {% for i in review_three_stars %}
-                              {% if i == "gold" %}
-                              <img src="{% static 'books_reviews_app/goldstar.png' %}" alt="My image" style="display:inline; max-height: 50px;">
-                              {% endif %}
-                              {% if i == "silver" %}
-                              <img src="{% static 'books_reviews_app/greystar.png' %}" alt="My image" style="display:inline; max-height: 50px;">
-                              {% endif %}
-                          {% endfor %}
-                        {% endif %}
-                        </div>
+                          {% if star == "grey" %}
+                          <img src="{% static 'books_reviews_app/greystar.png' %}" alt="My image" style="display:inline; max-height: 50px;">
+                          {% endif %}
+                        {% endfor %}
                         <p><a href="/users/{{ review.user.id }}">{{review.user.first_name}}</a> says: {{review.review}}</p>
                         <p>Posted on {{review.created_at}}</p>
                         {% if review.user.id == current_user.id %}
@@ -93,39 +69,44 @@
 
         <!--Column 2-->
         <div class="col-5 pt-5">
-            {% if messages %}
-            <ul class="messages border border-warning text-muted" style="width: 50%" id="messages">
-                {% for message in messages %}
-                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}> {{message}} </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            <form action="/add_review" method="POST">
-                {% csrf_token %}
-                <h4>Review: </h4>   
-                <textarea rows="5" cols="50" name="review" required="" class="text-muted pl-2"></textarea>
-                
-                <h4>Rating: </h4>
-                <select class="btn text-dark bg-light" name="rating">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-                <h4>stars. </h4>
+          {% if messages %}
+          <ul class="messages border border-warning text-muted" style="width: 50%" id="messages">
+              {% for message in messages %}
+                  <li {% if message.tags %} class="{{ message.tags }}"{% endif %}> {{message}} </li>
+              {% endfor %}
+          </ul>
+          {% endif %}
+          <form action="/add_review" method="POST">
+              {% csrf_token %}
+              <h4>Review: </h4>   
+              <textarea rows="5" cols="50" name="review" required="" class="text-muted pl-2"></textarea>
+              
+              <h4>Rating: </h4>
+              <select class="btn text-dark bg-light" name="rating">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+              </select>
+              <h4>stars. </h4>
 
-                <input type="hidden" name="user_id" value="{{current_user.id}}">
-                    
-                <div class="col-md-6 mb-3 text-center">
-                    <button class="btn btn-info btn-med mt-5" type="submit">Add Review</button>
-                </div>
-            </form>
-            </div>
-
+              <input type="hidden" name="user_id" value="{{current_user.id}}">
+                  
+              <div class="col-md-6 mb-3 text-center">
+                  <button class="btn btn-info btn-med mt-5" type="submit">Add Review</button>
+              </div>
+          </form>
+        </div>
       </div>
 
-      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <footer class="footer" style="background-color: #dec1c9; height: 5%;">
+        <div class="container text-center pt-1">
+          <span class="lead text-light">{{current_book.title}} by {{current_book.author.name}}</span>
+        </div>
+      </footer>
+
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
       <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
       <script src="../../assets/js/vendor/popper.min.js"></script>
       <script src="../../dist/js/bootstrap.min.js"></script>

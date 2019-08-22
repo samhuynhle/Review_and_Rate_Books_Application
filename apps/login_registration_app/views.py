@@ -6,6 +6,8 @@ import bcrypt
 
 # Create your views here.
 def home(request):
+    if 'user_id' not in request.session:
+        request.session['user_id'] = 'logged out'
 
     return render(request, 'login_registration_app/login_registration_home.html')
 
@@ -59,14 +61,13 @@ def login(request):
     request.session['registration_message'] = 'none'
     request.session['login_message'] = 'inline-block'
 
-    current_user = User.objects.get(email=request.POST['email'])
-
     if len(errors) > 0:
         for key, value in errors.items():
             print(key)
             messages.error(request,value)
         return redirect('/')
     else:
+        current_user = User.objects.get(email=request.POST['email'])
         request.session['user_id'] = current_user.id
         return redirect('/success')
 
